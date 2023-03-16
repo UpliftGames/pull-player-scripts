@@ -1,5 +1,9 @@
-# pull-player-module
-A python tool for pulling the Roblox PlayerModule.
+# pull-player-scripts
+A python tool for pulling the Roblox Player Scripts.
+
+Right now this only supports the PlayerModule, but the intention is to support other modules that are usually pulled directly into your games such as the chat scripts as well.
+
+This is a work in progress!
 
 ## Command Line Interface
 
