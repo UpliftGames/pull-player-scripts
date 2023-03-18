@@ -1,14 +1,14 @@
 import os
-from .Patch import patch
+from .Package import package
 
-def main(pull, apply_patch):
+def main(pull, apply_package):
     src_path = pull('extracontent-scripts.zip', os.path.join(
         'PlayerScripts', 
         'StarterPlayerScripts', 
         'PlayerModule'
     ))
 
-    if apply_patch:
-        src_path = patch(src_path)
+    if apply_package:
+        src_path = package(src_path)
 
     return src_path

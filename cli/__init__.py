@@ -1,56 +1,47 @@
 import os
-import json
 import argparse
 
-from .VersionInfo import get_status
-from .Package import make_package
-from .Wally import make_wally_toml
-from .Pull import pull
+from PullHelper import pull
+from FileHelper import fmt_create
+from VersionInfoClass import VersionInfo
 
-def log(msg):
-    print(msg)
 
-def write_to_env(key, value):
-    env_file = os.getenv('GITHUB_ENV')
-    if env_file:
-        with open(env_file, "a") as myfile:
-            myfile.write('{}={}\n'.format(key, value))
+import PlayerModule
+import RbxCharacterSounds
 
 def main():
-    parser = argparse.ArgumentParser('A tool for pulling the Roblox PlayerModule in a rojo format.')
-    parser.add_argument('--force', action='store_true', help='forcefully pull the playermodule even if the repository is up to date')
-    parser.add_argument('--package', action='store_true', help='package the playermodule for easier use in game')
-    parser.add_argument('--wally', nargs=2, type=str, metavar=('[author]', '[title]'), help='create a wally toml in the root of the cwd')
-    parser.add_argument('--debugwallyv', type=str, help='set a debug wally version for testing')
+    parser = argparse.ArgumentParser('a tool for pulling the roblox playerscripts in a rojo format.')
+
+    subparsers = parser.add_subparsers(dest='cmd', help='sub-command help')
+
+    player_module_parser = subparsers.add_parser('playermodule', help='pulls the playermodule')
+    player_module_parser.add_argument('--package', action='store_true', help='attempt to package the playermodule in a wally friendly format')
+
+    rbxcharactersounds_parser = subparsers.add_parser('rbxcharactersounds', help='pulls the rbxcharactersounds script')
+    rbxcharactersounds_parser.add_argument('--package', action='store_true', help='attempt to package the rbxcharactersounds in a wally friendly format')
+
+    file_creator_parser = subparsers.add_parser('project_add', help='creates/updates a number of files important extending the workflow of this tool')
+    file_creator_parser.add_argument('--wally', nargs=3, type=str, metavar=('[author]', '[title]', '[version]'), help='create a wally toml in the root of the cwd')
+    file_creator_parser.add_argument('--rojo', nargs=1, type=str, metavar=('[name]'), help='create a default.project.json in the root of the cwd')
+
     args = parser.parse_args()
+    live_info = VersionInfo.from_live()
 
-    should_pull, ver_info = get_status(args.force)
+    def live_pull(package_name, extract_path):
+        return pull(live_info.guid, package_name, extract_path)
 
-    write_to_env('SHOULD_PULL', 'true' if should_pull else 'false')
-
-    if should_pull:
-        player_module_path = pull(ver_info['guid'])
-
-        with open(os.path.join(player_module_path, 'VersionInfo.json'), 'w') as f:
-            f.write(json.dumps({
-                'version': ver_info['requested']['version'],
-                'guid': ver_info['guid'],
-            }, indent='\t'))
-
-        make_package(args.package, player_module_path)
-
-        with open('PulledStudioVersion.json', 'w') as f:
-            f.write(json.dumps(ver_info['requested'], indent='\t'))
-        
+    final_path = None
+    if args.cmd == 'playermodule':
+        final_path = PlayerModule.main(live_pull, args.package)
+    elif args.cmd == 'rbxcharactersounds':
+        final_path = RbxCharacterSounds.main(live_pull, args.package)
+    elif args.cmd == 'project_add':
         if args.wally:
-            author, title = tuple(args.wally)
-            wally_version = '.'.join(map(lambda x : str(x), ver_info['wally_version']))
-            if args.debugwallyv:
-                wally_version = args.debugwallyv
-            make_wally_toml('wally.toml', author, title, wally_version)
-        
-        write_to_env('VERSION', ver_info['requested']['version'])
-        
+            fmt_create('wally.toml', args.wally)
+        if args.rojo:
+            fmt_create('default.project.json', args.rojo)
+    
+    if final_path:
+        live_info.to_file(os.path.join(final_path, 'VersionInfo.json'))
 
-
-
+main()

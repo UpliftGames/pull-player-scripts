@@ -1,9 +1,9 @@
 import os
 import shutil
 
-lua_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lua')
+lua_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Lua')
 
-def add_patch_init(package_path):
+def add_package_init(package_path):
     shutil.copy(
         os.path.join(lua_folder, 'init.lua'), 
         os.path.join(package_path, 'init.lua')
@@ -32,23 +32,23 @@ def patch_camera_module(patched_player_module_path):
     with open(camera_module_init_path, 'w') as f:
         f.write(header + '\n\n' + existing)
 
-def patch(player_module_path):
-    tmp_src_path = os.path.join(player_module_path, os.path.pardir, 'tmp')
+def package(src_path):
+    tmp_src_path = os.path.join(src_path, os.path.pardir, 'tmp')
 
-    shutil.move(player_module_path, tmp_src_path)
-    os.mkdir(player_module_path)
+    shutil.move(src_path, tmp_src_path)
+    os.mkdir(src_path)
 
-    unpatched_player_module_path = os.path.join(player_module_path, 'PlayerModuleUnpatched')
-    patched_player_module_path = os.path.join(player_module_path, 'PlayerModulePatched')
+    unpatched_player_module_path = os.path.join(src_path, 'PlayerModuleUnpatched')
+    patched_player_module_path = os.path.join(src_path, 'PlayerModulePatched')
 
     shutil.copytree(tmp_src_path, unpatched_player_module_path)
     shutil.move(tmp_src_path, patched_player_module_path)
 
-    add_patch_init(player_module_path)
+    add_package_init(src_path)
     patch_camera_module(patched_player_module_path)
 
     if os.path.exists(tmp_src_path):
         shutil.rmtree(tmp_src_path)
     
-    return player_module_path
+    return src_path
 
