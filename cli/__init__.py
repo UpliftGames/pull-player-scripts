@@ -8,9 +8,14 @@ from .VersionInfoClass import VersionInfo
 from .PlayerScripts.PlayerModule import main as PlayerModule
 from .PlayerScripts.RbxCharacterSounds import main as RbxCharacterSounds
 
+def write_to_env(key, value):
+    env_file = os.getenv('GITHUB_ENV')
+    if env_file:
+        with open(env_file, "a") as myfile:
+            myfile.write('{}={}\n'.format(key, value))
+
 def main():
     parser = argparse.ArgumentParser('a tool for pulling the roblox playerscripts in a rojo format.')
-
     subparsers = parser.add_subparsers(dest='cmd', help='sub-command help')
 
     # handle these as subparsers as the commands may differ if support for more playerscripts is added in the future
@@ -29,6 +34,8 @@ def main():
 
     def live_pull(package_name, extract_path):
         return pull(live_info.guid, package_name, extract_path)
+    
+    write_to_env('VERSION', live_info.get_version_str())
 
     final_path = None
     if args.cmd == 'playermodule':

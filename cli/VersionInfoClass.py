@@ -18,7 +18,7 @@ class VersionInfo:
             and self.version[0] == 0
         )
     
-    def __get_version_str(self):
+    def get_version_str(self):
         return '.'.join(map(lambda x : str(x), self.version))
     
     def get_wally_version(self):
@@ -47,8 +47,8 @@ class VersionInfo:
         return VersionInfo(transformed_version, live['clientVersionUpload'])
     
     def compare(self, info):
-        v1 = self.__get_version_str()
-        v2 = info.__get_version_str()
+        v1 = self.get_version_str()
+        v2 = info.get_version_str()
 
         if v1 == v2:
             return 0
