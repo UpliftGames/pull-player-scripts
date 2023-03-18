@@ -43,5 +43,3 @@ def main():
     
     if final_path:
         live_info.to_file(os.path.join(final_path, 'VersionInfo.json'))
-
-main()
