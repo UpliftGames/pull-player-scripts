@@ -21,6 +21,9 @@ class VersionInfo:
     def __get_version_str(self):
         return '.'.join(map(lambda x : str(x), self.version))
     
+    def get_wally_version(self):
+        return '.'.join(map(lambda x : str(x), self.version[1:]))
+
     def to_json(self):
         return json.dumps({
             'version': '.'.join(map(lambda x : str(x), self.version)),
