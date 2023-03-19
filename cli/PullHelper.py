@@ -8,9 +8,9 @@ def download_url(url, target_path):
         with open(target_path, 'wb') as out_file:
             out_file.write(dl_file.read())
 
-def download_package(package_name, version_guid):
+def download_package(target_path, package_name, version_guid):
     url = 'https://setup.rbxcdn.com/{}-{}'.format(version_guid, package_name)
-    download_url(url, package_name)
+    download_url(url, target_path)
 
 def convert_to_rojo_format(directory):
     for fname in os.listdir(directory):
@@ -24,30 +24,32 @@ def convert_to_rojo_format(directory):
         elif fname.endswith('.robloxrc'):
             os.remove(fpath)
 
-def extract_player_module(zip_path, target_path):
+def extract(zip_path, extract_path, target_path):
     with zipfile.ZipFile(zip_path, 'r') as zip:
-        zip.extractall('tmp')
+        extracted_path = os.path.join(zip_path, os.path.pardir, 'extracted')
+        zip.extractall(extracted_path)
 
-        convert_to_rojo_format(os.path.join('tmp', 'PlayerScripts', 'StarterPlayerScripts'))
+        convert_to_rojo_format(os.path.join(extracted_path, extract_path, os.path.pardir))
 
         shutil.copytree(
-            os.path.join('tmp', 'PlayerScripts', 'StarterPlayerScripts', 'PlayerModule'),
+            os.path.join(extracted_path, extract_path),
             target_path
         )
 
-def pull(version_guid):
-    target_path = 'PlayerModule'
-    package_name = 'extracontent-scripts.zip'
+def pull(version_guid, package_name, extract_path):
+    tmp_path = 'tmp'
+    target_path = 'src'
+    zip_path = os.path.join(tmp_path, package_name)
 
     if os.path.exists(target_path):
         shutil.rmtree(target_path)
+    
+    os.makedirs(tmp_path)
 
-    download_package(package_name, version_guid)
-    extract_player_module(package_name, target_path)
+    download_package(zip_path, package_name, version_guid)
+    extract(zip_path, extract_path, target_path)
 
-    if os.path.exists(package_name):
-        os.remove(package_name)
-    if os.path.exists('tmp'):
-        shutil.rmtree('tmp')
+    if os.path.exists(tmp_path):
+        shutil.rmtree(tmp_path)
     
     return target_path
