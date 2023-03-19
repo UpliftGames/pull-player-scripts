@@ -22,4 +22,7 @@ These options can be specified when running the tool and are all optional.
 
 ## `--package` formats
 
-Some of the playerscripts that can be pulled include the optional `--package` command. This command changes the format of the result so that it can be more easily used as a project dependency. This second aims to discuss the individual formats of each playerscript this tool can pull.
+Some of the playerscripts that can be pulled include the optional `--package` command. This command changes the format of the result so that it can be more easily used as a project dependency. You can read more about how each playerscript is packaged here:
+
+- [PlayerModule](cli/PlayerScripts/PlayerModule/README.md)
+- [RbxCharacterSounds](cli/PlayerScripts/RbxCharacterSounds/README.md)
