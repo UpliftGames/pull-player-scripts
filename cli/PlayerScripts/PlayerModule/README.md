@@ -8,8 +8,8 @@ Package.get(patched: boolean): ModuleScript
 Package.getCopy(patched: boolean): ModuleScript
 
 -- replaces the PlayerModule under StarterPlayer.StarterPlayerScripts 
--- with a copy of the patched or unpatched version the PlayerModule and returns the copy
-Package.replace(patched: boolean): ModuleScript
+-- with the provided module script
+Package.replace(playerModule: ModuleScript)
 ```
 
 ## Patched CameraModule
@@ -23,6 +23,7 @@ Package
 		...
 	PlayerModulePatched
 		Patch.lua (new file)
+		Modifiers.lua (new file)
 		CameraModule
 			init.lua (modified)
 		ControlModule
@@ -36,6 +37,35 @@ The `PlayerModulePatched` however is a different story. This is a copy of the un
 Since this is a open source project it's worth discussing how this module is "patched" so that in the event something does go wrong others have context on how it can be fixed.
 
 ### Patch Criteria
+
+#### Modifiers.lua
+
+A submodule is added to the patched `PlayerModule` which provides the ability to write custom code additions/modifications to the `PlayerModule`. The interface of this module looks like this:
+
+```Lua
+-- adds custom modifier module script to be run at a certain priority level
+-- if no priority is specified then the code will be run at the end in no particular order
+Modifiers.add(modifier: ModuleScript, priority: number?)
+```
+
+The modifier modules themselves are quite straightforward. They should return a function that accepts one argument: reference to the `PlayerModule` instance. For example a modifier might look like this:
+
+```Lua
+-- some module in the game that handles player control
+local controlBindings = require(...)
+
+return function (PlayerModule: ModuleScript)
+	local controlObject = require(PlayerModule.ControlModule)
+
+	controlBindings.setEnableCallback(function(enabled)
+		if enabled then
+			controlObject:Enable()
+		else
+			controlObject:Disable()
+		end
+	end)
+end
+```
 
 #### Only header additions
 

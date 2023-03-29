@@ -1,4 +1,4 @@
-local patchModule = script.Parent:WaitForChild("Patch")
+local patchModule = script.Parent:FindFirstChild("Patch")
 local patch = patchModule and require(patchModule)
 
 local setmetatable = setmetatable

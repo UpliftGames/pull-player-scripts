@@ -24,15 +24,13 @@ function module.getCopy(patched: boolean): ModuleScript
 	return module.get(patched):Clone()
 end
 
-function module.replace(patched: boolean): ModuleScript
+function module.replace(playerModule: ModuleScript)
 	local existing = StarterPlayerScripts:FindFirstChild(MODULE_NAME)
 	if existing then
 		existing:Destroy()
 	end
 
-	local playerModule = module.getCopy(patched)
 	playerModule.Parent = StarterPlayerScripts
-	return playerModule
 end
 
 return module
