@@ -5,4 +5,6 @@ PulledStudioVersion.json
 default.project.json
 sourcemap.json
 release.rbxm
+playermodule.rbxm
+rbxcharactersounds.rbxm
 wally.toml

@@ -5,8 +5,13 @@ local StarterPlayerScripts = StarterPlayer:WaitForChild("StarterPlayerScripts")
 
 local module = {}
 local RbxCharacterSounds = script:WaitForChild("RbxCharacterSounds")
+local versionInfo = require(script:WaitForChild("VersionInfo"))
 
 local MODULE_NAME = RbxCharacterSounds.Name
+
+function module.getVersionInfo(): {[string]: string}
+	return table.clone(versionInfo)
+end
 
 function module.get(): ModuleScript
 	return RbxCharacterSounds

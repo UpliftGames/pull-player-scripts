@@ -9,9 +9,14 @@ local module = {}
 
 local patchedModule = script:WaitForChild("PlayerModulePatched")
 local unpatchedModule = script:WaitForChild("PlayerModuleUnpatched")
+local versionInfo = require(script:WaitForChild("VersionInfo"))
 
 patchedModule.Name = MODULE_NAME
 unpatchedModule.Name = MODULE_NAME
+
+function module.getVersionInfo(): {[string]: string}
+	return table.clone(versionInfo)
+end
 
 function module.get(patched: boolean): ModuleScript
 	if patched then

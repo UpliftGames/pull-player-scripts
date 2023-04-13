@@ -1,6 +1,9 @@
 The package has the following interface:
 
 ```Lua
+-- returns a copy of the version of the package
+Package.getVersionInfo(): {[string]: string}
+
 -- returns either the patched or unpatched version the PlayerModule
 Package.get(patched: boolean): ModuleScript
 
