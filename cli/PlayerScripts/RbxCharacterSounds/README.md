@@ -8,8 +8,8 @@ Package.get(patched: boolean): ModuleScript
 Package.getCopy(patched: boolean): ModuleScript
 
 -- replaces the RbxCharacterSounds under StarterPlayer.StarterPlayerScripts 
--- with a copy and then returns that copy
-Package.replace(patched: boolean): ModuleScript
+-- with the provided module script
+Package.replace(rbxCharacterSounds: ModuleScript)
 ```
 
 When using the `--package` option the structure looks like this:
