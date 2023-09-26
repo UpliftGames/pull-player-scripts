@@ -3,7 +3,7 @@ import json
 import urllib.request
 
 def request_live():
-    with urllib.request.urlopen('https://clientsettings.roblox.com/v2/client-version/WindowsStudio') as dl_file:
+    with urllib.request.urlopen('https://clientsettings.roblox.com/v2/client-version/WindowsStudio64') as dl_file:
         return json.loads(dl_file.read())
 
 class VersionInfo:
